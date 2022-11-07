@@ -1,29 +1,32 @@
 import './css/styles.css';
 import { fetchCountries } from './fetchCountries';
 import debounce from 'lodash.debounce';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-const DEBOUNCE_DELAY = 3000;
+const DEBOUNCE_DELAY = 300;
 let elRef = selector => document.querySelector(selector);
 
 elRef('#search-box').addEventListener('input', debounce(onInputEnter, DEBOUNCE_DELAY));
 
 function onInputEnter(evt) { 
     const name = (evt.target.value).trim();
+    elRef('.country-list').innerHTML = "";
+    elRef('.country-info').innerHTML = "";
+
     if (name === "") {
-        elRef('.country-list').innerHTML = "";
-        elRef('.country-info').innerHTML = "";
-    } else { 
-        fetchCountries(name)
-        .then((countries) => renderCountriesList(countries))
-        .catch(() => console.log('Oops, there is no country with that name'));
+        Notify.warning('Please enter a country name')
+        return
     }
+
+    fetchCountries(name)
+    .then((countries) => renderCountriesList(countries))
+    .catch(() => Notify.failure('Oops, there is no country with that name'));
 }
 
 function renderCountriesList(countries) { 
     const amountOfCountries = countries.length;
-    console.log(countries);
     if (amountOfCountries > 10) {
-        console.log('Too many matches found. Please enter a more specific name.');
+        Notify.info('Too many matches found. Please enter a more specific name.');
         return
     } else if (amountOfCountries >= 2 && amountOfCountries <= 10) {
         countriesMarkup(countries);
@@ -53,13 +56,13 @@ function countrieInfo(countries) {
                 <img src="${countrie.flags.svg}" alt="Флаг ${countrie.name.official}" width="60">
              <p>${countrie.name.official}</p>
             </li>
-            <li>
+            <li class="description">
                 <p><b>Capital:</b> ${countrie.capital}</p>
             </li>
-            <li>
+            <li class="description">
                 <p><b>Population:</b> ${countrie.population}</p>
             </li>
-            <li>
+            <li class="description">
                 <p><b>Languages:</b> ${Object.values(countrie.languages)}</p>
             </li>
         </ul>
