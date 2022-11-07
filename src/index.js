@@ -9,7 +9,7 @@ let elRef = selector => document.querySelector(selector);
 elRef('#search-box').addEventListener('input', debounce(onInputEnter, DEBOUNCE_DELAY));
 
 function onInputEnter(evt) { 
-    const name = (evt.target.value).trim();
+    const name = evt.target.value.trim();
     elRef('.country-list').innerHTML = "";
     elRef('.country-info').innerHTML = "";
 
@@ -39,7 +39,7 @@ function countriesMarkup(countries) {
     const markup = countries.map((countrie) => {
         return `
         <li class="countries">
-            <img src="${countrie.flags.svg}" alt="Флаг ${countrie.name.official}" width="40">
+            <img src="${countrie.flags.svg}" alt="Flag of ${countrie.name.official}" width="40">
             <p>${countrie.name.official}</p>
         </li>
         `;
@@ -53,7 +53,7 @@ function countrieInfo(countries) {
         return `
         <ul>
             <li class="countrie">
-                <img src="${countrie.flags.svg}" alt="Флаг ${countrie.name.official}" width="60">
+                <img src="${countrie.flags.svg}" alt="Flag of ${countrie.name.official}" width="60">
              <p>${countrie.name.official}</p>
             </li>
             <li class="description">
