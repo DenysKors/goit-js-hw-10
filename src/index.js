@@ -14,7 +14,57 @@ function onInputEnter(evt) {
         elRef('.country-info').innerHTML = "";
     } else { 
         fetchCountries(name)
-        .then((countries) => console.log(countries))
-        .catch((error) => console.log(error));
+        .then((countries) => renderCountriesList(countries))
+        .catch(() => console.log('Oops, there is no country with that name'));
     }
+}
+
+function renderCountriesList(countries) { 
+    const amountOfCountries = countries.length;
+    console.log(countries);
+    if (amountOfCountries > 10) {
+        console.log('Too many matches found. Please enter a more specific name.');
+        return
+    } else if (amountOfCountries >= 2 && amountOfCountries <= 10) {
+        countriesMarkup(countries);
+    } else { 
+        countrieInfo(countries);
+    }
+}
+
+function countriesMarkup(countries) { 
+    const markup = countries.map((countrie) => {
+        return `
+        <li class="countries">
+            <img src="${countrie.flags.svg}" alt="Флаг ${countrie.name.official}" width="40">
+            <p>${countrie.name.official}</p>
+        </li>
+        `;
+    })
+        .join('');
+    elRef('.country-list').innerHTML = markup;
+}
+
+function countrieInfo(countries) { 
+        const markup = countries.map((countrie) => {
+        return `
+        <ul>
+            <li class="countrie">
+                <img src="${countrie.flags.svg}" alt="Флаг ${countrie.name.official}" width="60">
+             <p>${countrie.name.official}</p>
+            </li>
+            <li>
+                <p><b>Capital:</b> ${countrie.capital}</p>
+            </li>
+            <li>
+                <p><b>Population:</b> ${countrie.population}</p>
+            </li>
+            <li>
+                <p><b>Languages:</b> ${Object.values(countrie.languages)}</p>
+            </li>
+        </ul>
+        `;
+    })
+        .join('');
+    elRef('.country-info').innerHTML = markup;
 }
